@@ -22,11 +22,10 @@ const gameSchema = z.object({
 
 export async function deleteGameAction(id: number) {
     try {
-        await prisma.games.delete({
+        await prisma.games.delete({ // Corregido a minúsculas
             where: { id: id }
         });
 
-        // Esto limpia la caché de la página de juegos para que el juego desaparezca
         revalidatePath('/games');
         return { success: true };
     } catch (error) {
@@ -35,15 +34,15 @@ export async function deleteGameAction(id: number) {
     }
 }
 
+// CORRECCIÓN: Agregado console_id a la interfaz de data
 export async function updateGameAction(
     id: number,
-    data: { title: string; price: number; cover: string },
+    data: { title: string; price: number; cover: string; console_id: number },
     formData?: FormData
 ) {
     try {
         let coverFileName = data.cover;
 
-        // Si viene una nueva imagen, guardarla
         const newCover = formData?.get("newCover") as File | null;
         if (newCover && newCover.size > 0) {
             const bytes = await newCover.arrayBuffer();
@@ -54,13 +53,13 @@ export async function updateGameAction(
             coverFileName = fileName;
         }
 
-        await prisma.games.update({
+        await prisma.games.update({ // Corregido a minúsculas
             where: { id },
             data: {
                 title: data.title,
                 price: data.price,
                 cover: coverFileName,
-                console_id: data.console_id,
+                console_id: Number(data.console_id), // Aseguramos que sea número
             }
         });
 
@@ -101,7 +100,7 @@ export async function createGameAction(formData: FormData) {
         }
 
         const file = formData.get("cover") as File;
-        let fileName = "no-cover.jpeg"; // 👈 default
+        let fileName = "no-cover.jpeg";
 
         if (file && file.size > 0) {
             const bytes = await file.arrayBuffer();
@@ -119,7 +118,10 @@ export async function createGameAction(formData: FormData) {
                 description: validated.data.description,
                 cover: fileName,
                 developer: "Pending",
-                releaseDate: new Date(formData.get("releaseDate") as string), 
+                // Validación básica de fecha para evitar errores de "Invalid Date"
+                releaseDate: formData.get("releaseDate")
+                    ? new Date(formData.get("releaseDate") as string)
+                    : new Date(),
                 genre: "Action"
             }
         });
