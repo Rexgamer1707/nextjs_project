@@ -22,7 +22,7 @@ const gameSchema = z.object({
 
 export async function deleteGameAction(id: number) {
     try {
-        await prisma.Games.delete({
+        await prisma.games.delete({
             where: { id: id }
         });
 
