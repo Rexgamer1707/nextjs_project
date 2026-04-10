@@ -2,12 +2,21 @@
 import { useRouter } from "next/navigation";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 
-export default function Pagination({ totalPages, currentPage }: { totalPages: number, currentPage: number }) {
+// ✅ Agregamos searchQuery a la definición de tipos
+interface PaginationProps {
+    totalPages: number;
+    currentPage: number;
+    searchQuery: string;
+}
+
+export default function Pagination({ totalPages, currentPage, searchQuery }: PaginationProps) {
     const router = useRouter();
 
     const handlePageChange = (newPage: number) => {
-        // Redirige a la misma página pero con el parámetro ?page=X
-        router.push(`/games?page=${newPage}`);
+        // ✅ Ahora incluimos el searchQuery en la URL para que la búsqueda se mantenga al cambiar de página
+        // Si searchQuery está vacío, solo mandará la página.
+        const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : "";
+        router.push(`/games?page=${newPage}${searchParam}`);
     };
 
     return (
