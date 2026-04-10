@@ -12,7 +12,7 @@ export default async function GameDetailsPage({ params }: { params: Promise<{ id
     const { id } = await params;
     const gameId = parseInt(id);
 
-    const game = await prisma.Games.findUnique({
+    const game = await prisma.games.findUnique({
         where: { id: gameId },
         include: { console: true }
     });
