@@ -6,6 +6,7 @@ import { PrismaNeon } from '@prisma/adapter-neon';
 import { revalidatePath } from 'next/cache';
 import { writeFile } from "fs/promises";
 import path from 'path';
+import { put } from "@vercel/blob";
 
 const prisma = new PrismaClient({
     adapter: new PrismaNeon({
@@ -42,34 +43,32 @@ export async function updateGameAction(
 ) {
     try {
         let coverFileName = data.cover;
-
         const newCover = formData?.get("newCover") as File | null;
+
         if (newCover && newCover.size > 0) {
-            const bytes = await newCover.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const fileName = `${Date.now()}-${newCover.name}`;
-            const filePath = path.join(process.cwd(), "public/uploads", fileName);
-            await writeFile(filePath, buffer);
-            coverFileName = fileName;
+            // ✅ SUBIDA A VERCEL BLOB PARA ACTUALIZACIÓN
+            const blob = await put(newCover.name, newCover, {
+                access: 'public',
+            });
+            coverFileName = blob.url;
         }
 
-        await prisma.games.update({ // Corregido a minúsculas
+        await prisma.games.update({
             where: { id },
             data: {
                 title: data.title,
                 price: data.price,
                 cover: coverFileName,
-                console_id: Number(data.console_id), // Aseguramos que sea número
+                console_id: Number(data.console_id),
             }
         });
 
         revalidatePath('/games');
         revalidatePath(`/games/${id}`);
         return { success: true };
-
     } catch (error) {
         console.error(error);
-        return { success: false, error: "Error al actualizar el juego" };
+        return { success: false, error: "Error al actualizar" };
     }
 }
 
@@ -95,19 +94,19 @@ export async function createGameAction(formData: FormData) {
         };
 
         const validated = gameSchema.safeParse(data);
-        if (!validated.success) {
-            return { success: false, errors: validated.error.flatten().fieldErrors };
-        }
+        if (!validated.success) return { success: false, errors: validated.error.flatten().fieldErrors };
 
         const file = formData.get("cover") as File;
-        let fileName = "no-cover.jpeg";
+        let finalImageUrl = "";
 
         if (file && file.size > 0) {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            fileName = `${Date.now()}-${file.name}`;
-            const filePath = path.join(process.cwd(), "public/uploads", fileName);
-            await writeFile(filePath, buffer);
+            // ✅ SUBIDA A VERCEL BLOB
+            const blob = await put(file.name, file, {
+                access: 'public',
+            });
+            finalImageUrl = blob.url; // Guardamos la URL pública (https://...)
+        } else {
+            finalImageUrl = "/no-cover.jpeg"; // Imagen por defecto en tu carpeta public
         }
 
         await prisma.games.create({
@@ -116,22 +115,18 @@ export async function createGameAction(formData: FormData) {
                 price: validated.data.price,
                 console_id: validated.data.console_id,
                 description: validated.data.description,
-                cover: fileName,
+                cover: finalImageUrl, // Guardamos la URL del Blob
                 developer: "Pending",
-                // Validación básica de fecha para evitar errores de "Invalid Date"
-                releaseDate: formData.get("releaseDate")
-                    ? new Date(formData.get("releaseDate") as string)
-                    : new Date(),
+                releaseDate: formData.get("releaseDate") ? new Date(formData.get("releaseDate") as string) : new Date(),
                 genre: "Action"
             }
         });
 
         revalidatePath("/games");
         return { success: true };
-
     } catch (error) {
-        console.error("❌ FULL ERROR:", error);
-        return { success: false, error: "Server error" };
+        console.error(error);
+        return { success: false, error: "Error al crear el juego" };
     }
 }
 
