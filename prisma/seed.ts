@@ -14,7 +14,7 @@ async function main() {
     // 1. Clean database
     // -----------------------------
     // IMPORTANTE: Los nombres deben coincidir con tu schema.prisma
-    await prisma.Games.deleteMany()   // Antes decía 'game' (error)
+    await prisma.games.deleteMany()   // Antes decía 'game' (error)
     await prisma.console.deleteMany() // Este estaba bien si el modelo es 'console'
 
     console.log('🧹 Database cleaned')
@@ -139,7 +139,7 @@ async function main() {
         if (!game.console_id) continue
 
         // Usamos prisma.Games porque así lo llamaste en el schema
-        await prisma.Games.create({
+        await prisma.games.create({
             data: game,
         })
     }
