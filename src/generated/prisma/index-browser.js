@@ -126,7 +126,8 @@ exports.Prisma.ConsoleScalarFieldEnum = {
   image: 'image',
   releaseDate: 'releaseDate',
   manufacturer: 'manufacturer',
-  description: 'description'
+  description: 'description',
+  iamge: 'iamge'
 };
 
 exports.Prisma.GamesScalarFieldEnum = {
@@ -149,6 +150,11 @@ exports.Prisma.SortOrder = {
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 
 

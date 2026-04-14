@@ -1014,6 +1014,7 @@ export namespace Prisma {
     releaseDate: Date | null
     manufacturer: string | null
     description: string | null
+    iamge: string | null
   }
 
   export type ConsoleMaxAggregateOutputType = {
@@ -1023,6 +1024,7 @@ export namespace Prisma {
     releaseDate: Date | null
     manufacturer: string | null
     description: string | null
+    iamge: string | null
   }
 
   export type ConsoleCountAggregateOutputType = {
@@ -1032,6 +1034,7 @@ export namespace Prisma {
     releaseDate: number
     manufacturer: number
     description: number
+    iamge: number
     _all: number
   }
 
@@ -1051,6 +1054,7 @@ export namespace Prisma {
     releaseDate?: true
     manufacturer?: true
     description?: true
+    iamge?: true
   }
 
   export type ConsoleMaxAggregateInputType = {
@@ -1060,6 +1064,7 @@ export namespace Prisma {
     releaseDate?: true
     manufacturer?: true
     description?: true
+    iamge?: true
   }
 
   export type ConsoleCountAggregateInputType = {
@@ -1069,6 +1074,7 @@ export namespace Prisma {
     releaseDate?: true
     manufacturer?: true
     description?: true
+    iamge?: true
     _all?: true
   }
 
@@ -1165,6 +1171,7 @@ export namespace Prisma {
     releaseDate: Date
     manufacturer: string
     description: string
+    iamge: string | null
     _count: ConsoleCountAggregateOutputType | null
     _avg: ConsoleAvgAggregateOutputType | null
     _sum: ConsoleSumAggregateOutputType | null
@@ -1193,6 +1200,7 @@ export namespace Prisma {
     releaseDate?: boolean
     manufacturer?: boolean
     description?: boolean
+    iamge?: boolean
     games?: boolean | console$gamesArgs<ExtArgs>
     _count?: boolean | ConsoleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["console"]>
@@ -1204,6 +1212,7 @@ export namespace Prisma {
     releaseDate?: boolean
     manufacturer?: boolean
     description?: boolean
+    iamge?: boolean
   }, ExtArgs["result"]["console"]>
 
   export type consoleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1213,6 +1222,7 @@ export namespace Prisma {
     releaseDate?: boolean
     manufacturer?: boolean
     description?: boolean
+    iamge?: boolean
   }, ExtArgs["result"]["console"]>
 
   export type consoleSelectScalar = {
@@ -1222,9 +1232,10 @@ export namespace Prisma {
     releaseDate?: boolean
     manufacturer?: boolean
     description?: boolean
+    iamge?: boolean
   }
 
-  export type consoleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "releaseDate" | "manufacturer" | "description", ExtArgs["result"]["console"]>
+  export type consoleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "releaseDate" | "manufacturer" | "description" | "iamge", ExtArgs["result"]["console"]>
   export type consoleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     games?: boolean | console$gamesArgs<ExtArgs>
     _count?: boolean | ConsoleCountOutputTypeDefaultArgs<ExtArgs>
@@ -1244,6 +1255,7 @@ export namespace Prisma {
       releaseDate: Date
       manufacturer: string
       description: string
+      iamge: string | null
     }, ExtArgs["result"]["console"]>
     composites: {}
   }
@@ -1674,6 +1686,7 @@ export namespace Prisma {
     readonly releaseDate: FieldRef<"console", 'DateTime'>
     readonly manufacturer: FieldRef<"console", 'String'>
     readonly description: FieldRef<"console", 'String'>
+    readonly iamge: FieldRef<"console", 'String'>
   }
     
 
@@ -3286,7 +3299,8 @@ export namespace Prisma {
     image: 'image',
     releaseDate: 'releaseDate',
     manufacturer: 'manufacturer',
-    description: 'description'
+    description: 'description',
+    iamge: 'iamge'
   };
 
   export type ConsoleScalarFieldEnum = (typeof ConsoleScalarFieldEnum)[keyof typeof ConsoleScalarFieldEnum]
@@ -3321,6 +3335,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -3397,6 +3419,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFilter<"console"> | Date | string
     manufacturer?: StringFilter<"console"> | string
     description?: StringFilter<"console"> | string
+    iamge?: StringNullableFilter<"console"> | string | null
     games?: GamesListRelationFilter
   }
 
@@ -3407,6 +3430,7 @@ export namespace Prisma {
     releaseDate?: SortOrder
     manufacturer?: SortOrder
     description?: SortOrder
+    iamge?: SortOrderInput | SortOrder
     games?: GamesOrderByRelationAggregateInput
   }
 
@@ -3420,6 +3444,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFilter<"console"> | Date | string
     manufacturer?: StringFilter<"console"> | string
     description?: StringFilter<"console"> | string
+    iamge?: StringNullableFilter<"console"> | string | null
     games?: GamesListRelationFilter
   }, "id" | "name">
 
@@ -3430,6 +3455,7 @@ export namespace Prisma {
     releaseDate?: SortOrder
     manufacturer?: SortOrder
     description?: SortOrder
+    iamge?: SortOrderInput | SortOrder
     _count?: consoleCountOrderByAggregateInput
     _avg?: consoleAvgOrderByAggregateInput
     _max?: consoleMaxOrderByAggregateInput
@@ -3447,6 +3473,7 @@ export namespace Prisma {
     releaseDate?: DateTimeWithAggregatesFilter<"console"> | Date | string
     manufacturer?: StringWithAggregatesFilter<"console"> | string
     description?: StringWithAggregatesFilter<"console"> | string
+    iamge?: StringNullableWithAggregatesFilter<"console"> | string | null
   }
 
   export type GamesWhereInput = {
@@ -3532,6 +3559,7 @@ export namespace Prisma {
     releaseDate: Date | string
     manufacturer: string
     description: string
+    iamge?: string | null
     games?: GamesCreateNestedManyWithoutConsoleInput
   }
 
@@ -3542,6 +3570,7 @@ export namespace Prisma {
     releaseDate: Date | string
     manufacturer: string
     description: string
+    iamge?: string | null
     games?: GamesUncheckedCreateNestedManyWithoutConsoleInput
   }
 
@@ -3551,6 +3580,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFieldUpdateOperationsInput | Date | string
     manufacturer?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    iamge?: NullableStringFieldUpdateOperationsInput | string | null
     games?: GamesUpdateManyWithoutConsoleNestedInput
   }
 
@@ -3561,6 +3591,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFieldUpdateOperationsInput | Date | string
     manufacturer?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    iamge?: NullableStringFieldUpdateOperationsInput | string | null
     games?: GamesUncheckedUpdateManyWithoutConsoleNestedInput
   }
 
@@ -3571,6 +3602,7 @@ export namespace Prisma {
     releaseDate: Date | string
     manufacturer: string
     description: string
+    iamge?: string | null
   }
 
   export type consoleUpdateManyMutationInput = {
@@ -3579,6 +3611,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFieldUpdateOperationsInput | Date | string
     manufacturer?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    iamge?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type consoleUncheckedUpdateManyInput = {
@@ -3588,6 +3621,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFieldUpdateOperationsInput | Date | string
     manufacturer?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    iamge?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type GamesCreateInput = {
@@ -3707,10 +3741,30 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type GamesListRelationFilter = {
     every?: GamesWhereInput
     some?: GamesWhereInput
     none?: GamesWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type GamesOrderByRelationAggregateInput = {
@@ -3724,6 +3778,7 @@ export namespace Prisma {
     releaseDate?: SortOrder
     manufacturer?: SortOrder
     description?: SortOrder
+    iamge?: SortOrder
   }
 
   export type consoleAvgOrderByAggregateInput = {
@@ -3737,6 +3792,7 @@ export namespace Prisma {
     releaseDate?: SortOrder
     manufacturer?: SortOrder
     description?: SortOrder
+    iamge?: SortOrder
   }
 
   export type consoleMinOrderByAggregateInput = {
@@ -3746,6 +3802,7 @@ export namespace Prisma {
     releaseDate?: SortOrder
     manufacturer?: SortOrder
     description?: SortOrder
+    iamge?: SortOrder
   }
 
   export type consoleSumOrderByAggregateInput = {
@@ -3798,6 +3855,24 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -3902,6 +3977,10 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type GamesUpdateManyWithoutConsoleNestedInput = {
     create?: XOR<GamesCreateWithoutConsoleInput, GamesUncheckedCreateWithoutConsoleInput> | GamesCreateWithoutConsoleInput[] | GamesUncheckedCreateWithoutConsoleInput[]
     connectOrCreate?: GamesCreateOrConnectWithoutConsoleInput | GamesCreateOrConnectWithoutConsoleInput[]
@@ -3996,6 +4075,20 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -4052,6 +4145,34 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -4138,6 +4259,7 @@ export namespace Prisma {
     releaseDate: Date | string
     manufacturer: string
     description: string
+    iamge?: string | null
   }
 
   export type consoleUncheckedCreateWithoutGamesInput = {
@@ -4147,6 +4269,7 @@ export namespace Prisma {
     releaseDate: Date | string
     manufacturer: string
     description: string
+    iamge?: string | null
   }
 
   export type consoleCreateOrConnectWithoutGamesInput = {
@@ -4171,6 +4294,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFieldUpdateOperationsInput | Date | string
     manufacturer?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    iamge?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type consoleUncheckedUpdateWithoutGamesInput = {
@@ -4180,6 +4304,7 @@ export namespace Prisma {
     releaseDate?: DateTimeFieldUpdateOperationsInput | Date | string
     manufacturer?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
+    iamge?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type GamesCreateManyConsoleInput = {

@@ -21,6 +21,13 @@ const gameSchema = z.object({
     description: z.string().min(10, "Description too short"),
 });
 
+export const consoleSchema = z.object({
+    name: z.string().min(2, "El nombre es muy corto"),
+    manufacturer: z.string().min(2, "El fabricante es obligatorio"),
+    description: z.string().min(10, "La descripción es muy corta"),
+    releaseDate: z.string().transform((val) => new Date(val)),
+});
+
 export async function deleteGameAction(id: number) {
     try {
         await prisma.games.delete({ // Corregido a minúsculas
@@ -183,21 +190,38 @@ export async function getConsolesWithCountAction() {
 
 export async function createConsoleAction(formData: FormData) {
     try {
-        const data = {
-            name: formData.get("name") as string,
-            manufacturer: formData.get("manufacturer") as string,
-            description: formData.get("description") as string,
-            releaseDate: new Date(formData.get("releaseDate") as string),
+        // Validamos los campos de texto
+        const rawData = {
+            name: formData.get("name"),
+            manufacturer: formData.get("manufacturer"),
+            description: formData.get("description"),
+            releaseDate: formData.get("releaseDate"),
         };
 
-        await prisma.console.create({ data });
+        const validated = consoleSchema.parse(rawData);
+        const file = formData.get("image") as File;
+
+        let imageUrl = "/imgs/no-console.jpeg";
+
+        if (file && file.size > 0) {
+            const blob = await put(file.name, file, { access: 'public' });
+            imageUrl = blob.url;
+        }
+
+        await prisma.console.create({
+            data: {
+                ...validated,
+                image: imageUrl,
+            }
+        });
+
         revalidatePath("/consoles");
         return { success: true };
     } catch (error) {
-        return { success: false, error: "No se pudo crear la consola" };
+        console.error("Error en createConsoleAction:", error);
+        return { success: false, error: "Error al crear la consola" };
     }
 }
-
 export async function deleteConsoleAction(id: number) {
     try {
         await prisma.console.delete({ where: { id } });
@@ -217,26 +241,40 @@ export async function getConsoleByIdAction(id: number) {
     }
 }
 
-export async function updateConsoleAction(id: number, data: {
-    name: string;
-    manufacturer: string;
-    description: string;
-    releaseDate: string;
-}) {
+export async function updateConsoleAction(id: number, formData: FormData) {
     try {
+        const rawData = {
+            name: formData.get("name"),
+            manufacturer: formData.get("manufacturer"),
+            description: formData.get("description"),
+            releaseDate: formData.get("releaseDate"),
+        };
+
+        const validated = consoleSchema.parse(rawData);
+        const file = formData.get("image") as File;
+
+        // Buscamos la consola actual para no perder la imagen si no se sube una nueva
+        const existingConsole = await prisma.console.findUnique({ where: { id } });
+        let imageUrl = existingConsole?.image || "/imgs/no-console.jpeg";
+
+        if (file && file.size > 0) {
+            const blob = await put(file.name, file, { access: 'public' });
+            imageUrl = blob.url;
+        }
+
         await prisma.console.update({
             where: { id },
             data: {
-                name: data.name,
-                manufacturer: data.manufacturer,
-                description: data.description,
-                releaseDate: new Date(data.releaseDate),
+                ...validated,
+                image: imageUrl,
             }
         });
+
         revalidatePath("/consoles");
         return { success: true };
     } catch (error) {
-        return { success: false, error: "No se pudo actualizar la consola" };
+        console.error("Error en updateConsoleAction:", error);
+        return { success: false, error: "Error al actualizar la consola" };
     }
 }
 
