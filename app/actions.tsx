@@ -3,6 +3,7 @@
 import { PrismaClient } from '@/src/generated/prisma';
 import { PrismaNeon } from '@prisma/adapter-neon';
 import { revalidatePath } from 'next/cache';
+
 import { put } from "@vercel/blob";
 import { gameSchema, consoleSchema } from "@/component/lib/schemas";
 
@@ -177,25 +178,30 @@ export async function getConsolesWithCountAction() {
 
 export async function createConsoleAction(formData: FormData) {
     try {
-        const rawData = Object.fromEntries(formData);
+        // 1. Extraer y validar datos de texto
+        const rawData = {
+            name: formData.get("name"),
+            manufacturer: formData.get("manufacturer"),
+            description: formData.get("description"),
+        };
+        const validated = consoleSchema.parse(rawData);
 
-        // VALIDACIÓN EN SERVIDOR
-        const validated = consoleSchema.safeParse(rawData);
-        if (!validated.success) {
-            return { success: false, error: "Datos inválidos en el servidor" };
-        }
-
+        // 2. Extraer archivo de imagen
         const file = formData.get("image") as File;
-        let imageUrl = "/imgs/no-console.jpeg";
+        let imageUrl = "/imgs/no-console.jpeg"; // Imagen por defecto
 
+        // 3. Subir a Vercel Blob si hay archivo
         if (file && file.size > 0) {
-            const blob = await put(file.name, file, { access: 'public' });
-            imageUrl = blob.url;
+            // Usamos un nombre único para evitar colisiones
+            const filename = `consoles/${Date.now()}-${file.name}`;
+            const blob = await put(filename, file, { access: 'public' });
+            imageUrl = blob.url; // Esta es la URL pública (https://...)
         }
 
+        // 4. Crear en Base de Datos
         await prisma.console.create({
             data: {
-                ...validated.data,
+                ...validated,
                 image: imageUrl,
             }
         });
@@ -203,6 +209,7 @@ export async function createConsoleAction(formData: FormData) {
         revalidatePath("/consoles");
         return { success: true };
     } catch (error) {
+        console.error("Error creating console:", error);
         return { success: false, error: "Error al crear la consola" };
     }
 }
@@ -212,7 +219,7 @@ export async function deleteConsoleAction(id: number) {
         revalidatePath("/consoles");
         return { success: true };
     } catch (error) {
-        return { success: false, error: "No se pudo eliminar la consola" };
+        return { success: false, error: "No se pudo eliminar" };
     }
 }
 
@@ -227,25 +234,29 @@ export async function getConsoleByIdAction(id: number) {
 
 export async function updateConsoleAction(id: number, formData: FormData) {
     try {
+        // 1. Extraer y validar datos
         const rawData = {
             name: formData.get("name"),
             manufacturer: formData.get("manufacturer"),
             description: formData.get("description"),
-            releaseDate: formData.get("releaseDate"),
         };
-
         const validated = consoleSchema.parse(rawData);
         const file = formData.get("image") as File;
 
-        // Buscamos la consola actual para no perder la imagen si no se sube una nueva
+        // 2. Buscar consola actual para mantener imagen si no se sube una nueva
         const existingConsole = await prisma.console.findUnique({ where: { id } });
         let imageUrl = existingConsole?.image || "/imgs/no-console.jpeg";
 
+        // 3. Si hay archivo nuevo, subirlo y reemplazar URL
         if (file && file.size > 0) {
-            const blob = await put(file.name, file, { access: 'public' });
+            const filename = `consoles/${Date.now()}-${file.name}`;
+            const blob = await put(filename, file, { access: 'public' });
             imageUrl = blob.url;
+
+            // Opcional: Aquí podrías añadir lógica para borrar la imagen vieja de Vercel Blob usando del(existingConsole.image)
         }
 
+        // 4. Actualizar en Base de Datos
         await prisma.console.update({
             where: { id },
             data: {
@@ -257,7 +268,7 @@ export async function updateConsoleAction(id: number, formData: FormData) {
         revalidatePath("/consoles");
         return { success: true };
     } catch (error) {
-        console.error("Error en updateConsoleAction:", error);
+        console.error("Error updating console:", error);
         return { success: false, error: "Error al actualizar la consola" };
     }
 }
