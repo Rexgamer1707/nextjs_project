@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Trash, Plus, PencilLine, Eye, X, Image as ImageIcon } from "@phosphor-icons/react";
 import { createConsoleAction, deleteConsoleAction, updateConsoleAction } from "@/app/actions";
-import { consoleSchema } from "@/app/actions"; // Importa tu esquema
+import { consoleSchema } from "@/component/lib/schemas"; // Importa tu esquema
 import Swal from "sweetalert2";
 
 const emptyForm = { name: "", manufacturer: "", description: "", releaseDate: "" };

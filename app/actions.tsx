@@ -1,12 +1,10 @@
 "use server";
 
-import { z } from "zod";
 import { PrismaClient } from '@/src/generated/prisma';
 import { PrismaNeon } from '@prisma/adapter-neon';
 import { revalidatePath } from 'next/cache';
-import { writeFile } from "fs/promises";
-import path from 'path';
 import { put } from "@vercel/blob";
+import { gameSchema, consoleSchema } from "@/component/lib/schemas";
 
 const prisma = new PrismaClient({
     adapter: new PrismaNeon({
@@ -14,19 +12,6 @@ const prisma = new PrismaClient({
     })
 })
 
-const gameSchema = z.object({
-    title: z.string().min(3, "Title required"),
-    price: z.coerce.number().positive("Invalid price"),
-    console_id: z.coerce.number(),
-    description: z.string().min(10, "Description too short"),
-});
-
-export const consoleSchema = z.object({
-    name: z.string().min(2, "El nombre es muy corto"),
-    manufacturer: z.string().min(2, "El fabricante es obligatorio"),
-    description: z.string().min(10, "La descripción es muy corta"),
-    releaseDate: z.string().transform((val) => new Date(val)),
-});
 
 export async function deleteGameAction(id: number) {
     try {
@@ -43,30 +28,32 @@ export async function deleteGameAction(id: number) {
 }
 
 // CORRECCIÓN: Agregado console_id a la interfaz de data
-export async function updateGameAction(
-    id: number,
-    data: { title: string; price: number; cover: string; console_id: number },
-    formData?: FormData
-) {
+export async function updateGameAction(id: number, formData: FormData) {
     try {
-        let coverFileName = data.cover;
-        const newCover = formData?.get("newCover") as File | null;
+        const rawData = {
+            title: formData.get("title"),
+            price: formData.get("price"),
+            console_id: formData.get("console_id"),
+            description: formData.get("description"),
+        };
+
+        const validated = gameSchema.parse(rawData);
+        const newCover = formData.get("newCover") as File | null;
+
+        const existingGame = await prisma.games.findUnique({ where: { id } });
+        let coverFileName = existingGame?.cover || "/no-cover.jpeg";
 
         if (newCover && newCover.size > 0) {
-            // ✅ SUBIDA A VERCEL BLOB PARA ACTUALIZACIÓN
-            const blob = await put(newCover.name, newCover, {
-                access: 'public',
-            });
+            const blob = await put(newCover.name, newCover, { access: 'public' });
             coverFileName = blob.url;
         }
 
         await prisma.games.update({
             where: { id },
             data: {
-                title: data.title,
-                price: data.price,
+                ...validated,
                 cover: coverFileName,
-                console_id: Number(data.console_id),
+                console_id: Number(validated.console_id),
             }
         });
 
