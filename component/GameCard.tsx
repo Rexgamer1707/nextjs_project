@@ -57,9 +57,11 @@ export default function GameCard({ game }: { game: any }) {
         <div className="card bg-black/40 backdrop-blur-md border border-white/10 shadow-xl hover:border-indigo-500/50 transition-all group overflow-hidden">
             <figure className="relative h-64 w-full overflow-hidden bg-gray-900">
                 <img
-                    src={game.cover === "no-cover.jpeg"
-                        ? "/imgs/no-cover.jpeg"
-                        : `/uploads/${game.cover}`}
+                    src={
+                        game.cover.startsWith("http")
+                            ? game.cover
+                            : (game.cover === "no-cover.jpeg" ? "/imgs/no-cover.jpeg" : `/uploads/${game.cover}`)
+                    }
                     alt={game.title}
                     className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
