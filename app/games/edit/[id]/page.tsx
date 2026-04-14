@@ -2,7 +2,7 @@
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getGameByIdAction, updateGameAction, getConsolesAction } from "@/app/actions";
-import { CaretLeft, Save } from "@phosphor-icons/react";
+import { CaretLeft, FloppyDisk } from "@phosphor-icons/react";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { z } from "zod";
@@ -204,7 +204,11 @@ export default function EditGamePage({ params }: { params: Promise<{ id: string 
                             disabled={isSubmitting}
                             className="btn btn-primary flex-1 gap-2 shadow-lg shadow-indigo-500/20"
                         >
-                            {isSubmitting ? <span className="loading loading-spinner"></span> : <Save size={20} />}
+                            {isSubmitting ? (
+                                <span className="loading loading-spinner"></span>
+                            ) : (
+                                <FloppyDisk size={20} /> // 👈 Aquí usamos el nuevo nombre
+                            )}
                             Guardar Cambios
                         </button>
                         <button
