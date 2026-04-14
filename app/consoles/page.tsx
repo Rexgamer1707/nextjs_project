@@ -19,7 +19,7 @@ export default async function ConsolesPage() {
 
     return (
         <SideBar currentPath="/consoles">
-            <ConsolesClient consoles={consoles ?? []} />
+            <ConsolesClient initialConsoles={consoles ?? []} />
         </SideBar>
     );
 }

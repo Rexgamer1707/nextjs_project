@@ -177,17 +177,15 @@ export async function getConsolesWithCountAction() {
 
 export async function createConsoleAction(formData: FormData) {
     try {
-        // Validamos los campos de texto
-        const rawData = {
-            name: formData.get("name"),
-            manufacturer: formData.get("manufacturer"),
-            description: formData.get("description"),
-            releaseDate: formData.get("releaseDate"),
-        };
+        const rawData = Object.fromEntries(formData);
 
-        const validated = consoleSchema.parse(rawData);
+        // VALIDACIÓN EN SERVIDOR
+        const validated = consoleSchema.safeParse(rawData);
+        if (!validated.success) {
+            return { success: false, error: "Datos inválidos en el servidor" };
+        }
+
         const file = formData.get("image") as File;
-
         let imageUrl = "/imgs/no-console.jpeg";
 
         if (file && file.size > 0) {
@@ -197,7 +195,7 @@ export async function createConsoleAction(formData: FormData) {
 
         await prisma.console.create({
             data: {
-                ...validated,
+                ...validated.data,
                 image: imageUrl,
             }
         });
@@ -205,7 +203,6 @@ export async function createConsoleAction(formData: FormData) {
         revalidatePath("/consoles");
         return { success: true };
     } catch (error) {
-        console.error("Error en createConsoleAction:", error);
         return { success: false, error: "Error al crear la consola" };
     }
 }
