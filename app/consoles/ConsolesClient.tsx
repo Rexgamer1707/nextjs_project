@@ -82,7 +82,7 @@ export default function ConsolesClient({ consoles }: { consoles: any[] }) {
     const validate = () => {
         const result = consoleSchema.safeParse(formData);
         if (!result.success) {
-            const errorMsg = result.error.errors.map(e => e.message).join("\n");
+            const errorMsg = result.error.issues.map(issue => issue.message).join("\n");
             Swal.fire({ title: 'Datos inválidos', text: errorMsg, icon: 'warning', background: '#111827', color: '#ffffff' });
             return false;
         }
